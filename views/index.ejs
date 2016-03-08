@@ -1,0 +1,60 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title></title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var socket = io.connect();
+      $('form').submit(function(){
+        console.log("cl")
+        socket.emit("info submitted",{
+          name: $('#name').val(),
+          location: $('#location').val(),
+          language: $('#language').val(),
+          comment: $('#comment').val()
+        })
+        return false;
+      })
+      socket.on('serverResponse', function(data){
+        $('#message').html("You emitted the following information to the server: "
+          + JSON.stringify(data.data))
+      })
+      socket.on('randomNum', function(number){
+        $('#number').html("Your lucky number emitted by the server is " 
+          + JSON.stringify(number.response))
+      })
+    })
+  </script>
+</head>
+
+<body>
+  <div id="message"></div>
+  <div id="number"></div>
+  <form action="/result" method="post">
+    <label>Your Name:</label>
+    <input type="text" name="name" id="name"> 
+    <br>
+    <label>Dojo Location:</label>
+    <select name="location" id="location">
+      <option value='Mountain View'>Mountain View</option>
+      <option value='New York'>New York</option>
+      <option value='Seattle'>Seattle</option>
+    </select>
+    <br>
+    <label>Favorite Language:</label>
+    <select name="language" id="language">
+      <option value='Javascript'>Javascript</option>
+      <option value='Ruby'>Ruby</option>
+      <option value='Seattle'>Seattle</option>
+    </select>
+    <br>
+    <label>Comment</label>
+    <br>
+    <textarea name="comment" id="comment"></textarea>
+    <br>
+    <input type="submit" value="submit">
+  </form> 
+</body>
+</html>
